@@ -1,0 +1,14 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3.12-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: followthe
+      RABBITMQ_DEFAULT_PASS: rabbit
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    networks:
+      - nestjs
+networks:
+  nestjs:
+    driver: bridge
