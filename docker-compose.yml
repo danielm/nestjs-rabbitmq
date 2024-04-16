@@ -1,6 +1,7 @@
 services:
   rabbitmq:
     image: rabbitmq:3.12-management-alpine
+    restart: unless-stopped
     environment:
       RABBITMQ_DEFAULT_USER: followthe
       RABBITMQ_DEFAULT_PASS: rabbit

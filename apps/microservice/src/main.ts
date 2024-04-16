@@ -8,24 +8,31 @@ import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app/app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
+  // Workaround: see https://github.com/nestjs/nest/issues/2343
+  const ctx = await NestFactory.createApplicationContext(AppModule);
+  const config = ctx.get<ConfigService>(ConfigService);
+
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,
     {
       transport: Transport.RMQ,
       options: {
-        urls: ['amqp://followthe:rabbit@localhost:5672'],
-        queue: 'cats_queue',
+        urls: [config.get<string>('RMQ_URL')],
+        queue: config.get<string>('RMQ_QUEUE'),
         queueOptions: {
-          durable: false,
+          durable: config.get<boolean>('RMQ_QUEUE_DURABLE'),
         },
       },
     }
   );
-  await app.listen();
 
-  Logger.log(`🚀 RabbitMQ microservice is running!`);
+  // Workaround: see https://github.com/nestjs/nest/issues/2343
+  ctx.close();
+
+  await app.listen();
 }
 
 bootstrap();
