@@ -15,12 +15,25 @@ export class AppController {
   @Get('/enqueue')
   enqueueDemo() {
     const pattern = { cmd: 'echo' };
-    const payload = "World";
+    const payload = { message: "Hello World" };
 
-    this.client.send<string>(pattern, payload);
+    this.client.send(pattern, payload);
 
     this.logger.log('Enqueued echo message!');
 
-    return { message: 'It works' };
+    return { message: 'Menssage enqueued' };
+  }
+
+  @Get('/emit')
+  eventDemo() {
+    const payload = {
+      hello: "world"
+    };
+
+    this.client.emit<number>('my_event_name', payload);
+
+    this.logger.log('Event emited!');
+
+    return { message: 'Event emited' };
   }
 }

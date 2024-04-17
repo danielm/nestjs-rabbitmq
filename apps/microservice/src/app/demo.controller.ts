@@ -1,5 +1,5 @@
 import { Controller, Logger } from '@nestjs/common';
-import { MessagePattern } from '@nestjs/microservices';
+import { EventPattern, MessagePattern } from '@nestjs/microservices';
 
 @Controller()
 export class DemoController {
@@ -9,6 +9,11 @@ export class DemoController {
   echo(data: string): string {
     this.logger.log('Echo data invoked!');
 
-    return `Echo: ${data}`
+    return `Echo: ${data}`;
+  }
+
+  @EventPattern('my_event_name')
+  async handleMyEvent(data: Record<string, unknown>) {
+    this.logger.log(data, 'My event recieved');
   }
 }
